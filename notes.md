@@ -19,9 +19,9 @@ https://learn.microsoft.com/en-us/azure/app-service/tutorial-multi-container-app
 - part of that involves customizing the docker image
 
 
+## Instructions on adding SSH from Microsoft forum
 
-
-Docker File: 
+### Docker File: 
 
 FROM node:lts-alpine
 ENV NODE_ENV=production
@@ -30,7 +30,7 @@ COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*","sshd_config"
 RUN npm install --production --silent && mv node_modules ../
 COPY sshd_config /etc/ssh/
  
- 
+
 # Start and enable SSH
 RUN apk add openssh \
        && echo "root:Docker!" | chpasswd \
@@ -42,4 +42,36 @@ EXPOSE 3000 2222
 #RUN chown -R node /usr/src/app
 #USER node
 ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ] 
+
  
+### sshd_config:
+ 
+Port                                    2222
+ListenAddress                  0.0.0.0
+LoginGraceTime                             180
+X11Forwarding                yes
+Ciphers aes128-cbc,3des-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr
+MACs hmac-sha1,hmac-sha1-96
+StrictModes                     yes
+SyslogFacility                    DAEMON
+PasswordAuthentication             yes
+PermitEmptyPasswords               no
+PermitRootLogin             yes
+Subsystem sftp internal-sftp
+ 
+### entrypoint.sh
+
+#!/bin/sh
+set -e
+ 
+# Get env vars in the Dockerfile to show up in the SSH session
+eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/g' | sed '/=/s//="/' | sed 's/$/"/' >> /etc/profile)
+ 
+echo "Starting SSH ..."
+/usr/sbin/sshd
+exec npm start
+ 
+ 
+
+
+https://github.com/actions/checkout/discussions/928#discussioncomment-3871262
