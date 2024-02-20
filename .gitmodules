@@ -1,0 +1,3 @@
+[submodule "plugins/themes/post45"]
+	path = plugins/themes/post45
+	url = https://github.com/Post45-Journal/ojs-theme.git
