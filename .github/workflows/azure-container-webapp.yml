@@ -47,6 +47,7 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.SUBMODULE_GITHUB_TOKEN }}
+          persist-credentials: false
 
       # - name: Download OJS Config File
       #   run: |
