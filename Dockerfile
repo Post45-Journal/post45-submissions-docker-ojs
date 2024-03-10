@@ -28,7 +28,10 @@ ENV PACKAGES 			\
 	patch			\
 	php81			\
 	php81-apache2		\
-	runit
+	runit			\
+	nano            \
+	bash			\
+	shadow
 
 # PHP extensions
 ENV PHP_EXTENSIONS		\
