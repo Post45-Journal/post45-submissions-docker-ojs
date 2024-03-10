@@ -127,6 +127,10 @@ RUN set -xe \
 	&& find . -name "test" -exec rm -Rf '{}' \; \
 	&& find . \( -name .gitignore -o -name .gitmodules -o -name .keepme \) -exec rm -Rf '{}' \;
 
+# Fix mixed content issue
+COPY .htaccess /var/www/html/
+RUN sed -i 's@^#LoadModule headers_module modules/mod_headers\.so@LoadModule headers_module modules/mod_headers.so@' /etc/apache2/httpd.conf
+
 # Enable ssh
 COPY sshd_config /etc/ssh/
 COPY entrypoint.sh /var/www/html/

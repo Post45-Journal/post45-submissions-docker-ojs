@@ -19,61 +19,9 @@ https://learn.microsoft.com/en-us/azure/app-service/tutorial-multi-container-app
 - part of that involves customizing the docker image
 
 
-## Instructions on adding SSH from Microsoft forum
+## Adding SSH to Azure App Service Container
 - + Examples: https://github.com/azureossd/docker-container-ssh-examples
-
-
-### Docker File: 
-
-FROM node:lts-alpine
-ENV NODE_ENV=production
-WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*","sshd_config","entrypoint.sh", "./"]
-RUN npm install --production --silent && mv node_modules ../
-COPY sshd_config /etc/ssh/
- 
-
-# Start and enable SSH
-RUN apk add openssh \
-       && echo "root:Docker!" | chpasswd \
-                     && chmod +x //usr/src/app/entrypoint.sh \
-                     && cd /etc/ssh/ \
-                     && ssh-keygen -A
-COPY . .
-EXPOSE 3000 2222
-#RUN chown -R node /usr/src/app
-#USER node
-ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ] 
-
- 
-### sshd_config:
- 
-<!-- Port                                    2222
-ListenAddress                  0.0.0.0
-LoginGraceTime                             180
-X11Forwarding                yes
-Ciphers aes128-cbc,3des-cbc,aes256-cbc,aes128-ctr,aes192-ctr,aes256-ctr
-MACs hmac-sha1,hmac-sha1-96
-StrictModes                     yes
-SyslogFacility                    DAEMON
-PasswordAuthentication             yes
-PermitEmptyPasswords               no
-PermitRootLogin             yes
-Subsystem sftp internal-sftp -->
- 
-<!-- ### entrypoint.sh
-
-#!/bin/sh
-set -e
- 
-# Get env vars in the Dockerfile to show up in the SSH session
-eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/g' | sed '/=/s//="/' | sed 's/$/"/' >> /etc/profile)
- 
-echo "Starting SSH ..."
-/usr/sbin/sshd
-exec npm start -->
- 
- 
+- [Troubleshooting](https://azureossd.github.io/2022/04/27/2022-Enabling-SSH-on-Linux-Web-App-for-Containers/index.html#troubleshooting)
 
 
 https://github.com/actions/checkout/discussions/928#discussioncomment-3871262
@@ -82,3 +30,12 @@ https://github.com/actions/checkout/issues/116#issuecomment-644419389
 
 
 https://thenewstack.io/how-to-trigger-github-actions-on-submodule-updates/#:~:text=First%2C%20you%20can%20choose%20how,out%20on%20the%20parent%20REPOSITORY%20.
+
+
+## Mixed Content issue
+Need to enable apache's mod_headers
+then add the following to .htaccess
+
+<ifModule mod_headers.c>
+Header always set Content-Security-Policy "upgrade-insecure-requests;"
+</IfModule>
