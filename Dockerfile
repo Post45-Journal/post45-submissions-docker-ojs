@@ -9,7 +9,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1  \
 	SERVERNAME="localhost"      \
 	HTTPS="on"                  \
 	OJS_VERSION=stable-3_4_0 \
-	OJS_CLI_INSTALL="0"         \
+	OJS_CLI_INSTALL="1"         \
 	OJS_WEB_CONF="/etc/apache2/conf.d/ojs.conf"	\
 	OJS_CONF="/var/www/html/config.inc.php"
 
