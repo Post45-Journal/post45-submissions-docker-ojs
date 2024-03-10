@@ -128,11 +128,12 @@ RUN set -xe \
 	&& find . \( -name .gitignore -o -name .gitmodules -o -name .keepme \) -exec rm -Rf '{}' \;
 
 # Enable ssh
-COPY ["sshd_config", "entrypoint.sh", "./"] 
 COPY sshd_config /etc/ssh/
+COPY entrypoint.sh /var/www/html/
+
 RUN apk add openssh \
        && echo "root:Docker!" | chpasswd \
-                     && chmod +x //var/www/html/entrypoint.sh \
+                     && chmod +x /var/www/html/entrypoint.sh \
                      && cd /etc/ssh/ \
                      && ssh-keygen -A
 
@@ -143,7 +144,7 @@ ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 COPY root/ /
 
-EXPOSE 3000 2222
+EXPOSE 8000 2222
 
 EXPOSE 80 
 EXPOSE 443
@@ -151,6 +152,3 @@ EXPOSE 443
 VOLUME [ "/var/www/files", "/var/www/html/public" ]
 
 ENTRYPOINT [ "/var/www/html/entrypoint.sh" ] 
-
-RUN chmod +x /usr/local/bin/ojs-start
-CMD ["ojs-start"]

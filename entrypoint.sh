@@ -6,3 +6,6 @@ eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/
  
 echo "Starting SSH ..."
 /usr/sbin/sshd
+
+RUN chmod +x /usr/local/bin/ojs-start
+CMD ["ojs-start"]

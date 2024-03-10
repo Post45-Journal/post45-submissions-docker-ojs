@@ -20,6 +20,8 @@ https://learn.microsoft.com/en-us/azure/app-service/tutorial-multi-container-app
 
 
 ## Instructions on adding SSH from Microsoft forum
+- + Examples: https://github.com/azureossd/docker-container-ssh-examples
+
 
 ### Docker File: 
 
@@ -46,7 +48,7 @@ ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
  
 ### sshd_config:
  
-Port                                    2222
+<!-- Port                                    2222
 ListenAddress                  0.0.0.0
 LoginGraceTime                             180
 X11Forwarding                yes
@@ -57,9 +59,9 @@ SyslogFacility                    DAEMON
 PasswordAuthentication             yes
 PermitEmptyPasswords               no
 PermitRootLogin             yes
-Subsystem sftp internal-sftp
+Subsystem sftp internal-sftp -->
  
-### entrypoint.sh
+<!-- ### entrypoint.sh
 
 #!/bin/sh
 set -e
@@ -69,9 +71,14 @@ eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/
  
 echo "Starting SSH ..."
 /usr/sbin/sshd
-exec npm start
+exec npm start -->
  
  
 
 
 https://github.com/actions/checkout/discussions/928#discussioncomment-3871262
+
+https://github.com/actions/checkout/issues/116#issuecomment-644419389
+
+
+https://thenewstack.io/how-to-trigger-github-actions-on-submodule-updates/#:~:text=First%2C%20you%20can%20choose%20how,out%20on%20the%20parent%20REPOSITORY%20.
