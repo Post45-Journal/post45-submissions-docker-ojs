@@ -20,6 +20,7 @@ configVariable["host"]=$OJS_DB_HOST
 configVariable["username"]=$OJS_DB_USER
 configVariable["password"]=$OJS_DB_PASSWORD
 configVariable["name"]=$OJS_DB_NAME
+configVariable["time_zone"]=$TIME_ZONE
 
 for key in "${!configVariable[@]}"; do
   ojs-variable $key ${configVariable[$key]}
