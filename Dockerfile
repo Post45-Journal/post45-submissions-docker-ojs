@@ -146,6 +146,10 @@ RUN apk add openssh \
 # Add themes
 ADD plugins/themes /var/www/html/plugins/themes
 
+# Add SSL cert option for DB Connection (replace files in pkp lib)
+COPY ssl/PKPContainer.php /var/www/html/lib/pkp/classes/core
+COPY ssl/PKPInstall.php /var/www/html/lib/pkp/classes/install
+
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
 COPY root/ /
