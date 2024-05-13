@@ -97,7 +97,7 @@ class PKPInstall extends Installer
             'password' => $this->getParam('databasePassword'),
             'charset' => 'utf8',
             'collation' => 'utf8_general_ci',
-            'options'   => include("ssl/options.php"),
+            'options'   => include("/var/www/html/ssl/options.php"),
         ];
         FacadesConfig::set('database', $config);
 

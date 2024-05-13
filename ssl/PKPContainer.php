@@ -305,7 +305,7 @@ class PKPContainer extends Container
             'password' => Config::getVar('database', 'password'),
             'charset' => Config::getVar('i18n', 'connection_charset', 'utf8'),
             'collation' => Config::getVar('database', 'collation', 'utf8_general_ci'),
-            'options'   => include("ssl/options.php"),
+            'options'   => include("/var/www/html/ssl/options.php"),
         ];
 
         // Queue connection
