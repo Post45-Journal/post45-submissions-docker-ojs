@@ -108,7 +108,7 @@ RUN set -xe \
         && NODE_OPTIONS=--openssl-legacy-provider npm run build \
 # Create directories
  	&& mkdir -p /var/www/files /run/apache2  \
-	&& cp config.TEMPLATE.inc.php config.inc.php \
+	&& if test -f /home/config.inc.php; then cp /home/config.inc.php config.inc.php; else cp config.TEMPLATE.inc.php config.inc.php; fi\
 	&& chown -R apache:apache /var/www/* \
 # Prepare freefont for captcha 
 	&& ln -s /usr/share/fonts/TTF/FreeSerif.ttf /usr/share/fonts/FreeSerif.ttf \
