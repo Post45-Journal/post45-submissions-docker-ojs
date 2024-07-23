@@ -14,12 +14,14 @@ sed -i 's:/tmp/ojs.config.inc.php:/tmp/config.inc.php:' /usr/local/bin/ojs-varia
 # Set config variables using env variables https://github.com/pkp/ojs/blob/main/config.TEMPLATE.inc.php
 echo "Updating OJS config based on env variables..."
 declare -A configVariable
+configVariable["installed"]="On"
 configVariable["base_url"]=$WEBSITE_HOSTNAME 
 configVariable["restful_urls"]="On"
 configVariable["host"]=$OJS_DB_HOST
 configVariable["username"]=$OJS_DB_USER
 configVariable["password"]=$OJS_DB_PASSWORD
 configVariable["name"]=$OJS_DB_NAME
+configVariable["locale"]="en_US"
 configVariable["time_zone"]=$TIME_ZONE
 
 for key in "${!configVariable[@]}"; do
