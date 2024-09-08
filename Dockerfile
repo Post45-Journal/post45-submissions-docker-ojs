@@ -135,6 +135,7 @@ RUN set -xe \
 # Fix mixed content issue
 COPY .htaccess /var/www/html/
 RUN sed -i 's@^#LoadModule headers_module modules/mod_headers\.so@LoadModule headers_module modules/mod_headers.so@' /etc/apache2/httpd.conf
+RUN sed -i "s/\$this->_protocol = (!isset(\$_SERVER\['HTTPS'\]) || strtolower_codesafe(\$_SERVER\['HTTPS'\]) != 'on') ? 'http' : 'https'/\$this->_protocol = 'https'/" /var/www/html/lib/pkp/classes/core/PKPRequest.php
 
 # Enable ssh
 COPY sshd_config /etc/ssh/
