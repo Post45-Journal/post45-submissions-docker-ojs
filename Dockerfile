@@ -11,7 +11,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1  \
 	OJS_VERSION=stable-3_4_0 \
 	OJS_CLI_INSTALL="1"         \
 	OJS_WEB_CONF="/etc/apache2/conf.d/ojs.conf"	\
-	OJS_CONF="/var/www/html/config.inc.php"
+	OJS_CONF="/var/www/html/config.inc.php" \
+	SAVED_OJS_CONF="/home/config.inc.php"
 
 # PHP_INI_DIR to be symmetrical with official php docker image
 ENV PHP_INI_DIR /etc/php/8.1
@@ -108,10 +109,7 @@ RUN set -xe \
         && NODE_OPTIONS=--openssl-legacy-provider npm run build \
 # Create directories
  	&& mkdir -p /var/www/files /run/apache2  \
-	&& if test -f /home/config.inc.php; then \
-			cp /home/config.inc.php config.inc.php; \
-			else cp config.TEMPLATE.inc.php config.inc.php; \
-		fi\
+	&& cp config.TEMPLATE.inc.php config.inc.php \
 	&& chown -R apache:apache /var/www/* \
 # Prepare freefont for captcha 
 	&& ln -s /usr/share/fonts/TTF/FreeSerif.ttf /usr/share/fonts/FreeSerif.ttf \

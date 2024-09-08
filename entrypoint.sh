@@ -18,12 +18,17 @@ chown apache /home/files
 chgrp apache /home/files
 
 declare -A configVariable
-if ! test -f /home/config.inc.php; then 
+if [ -f $SAVED_OJS_CONF ]
+then 
+  echo "Using existing config.inc.php from /home/config.inc.php"
+  cp $SAVED_OJS_CONF $OJS_CONF 
+else
   # Set config variables using env variables https://github.com/pkp/ojs/blob/main/config.TEMPLATE.inc.php
-  echo "Updating OJS config based on env variables..."
+  echo "No existing config in /home. Updating OJS config based on env variables..."
   # General
   configVariable["installed"]="On"
-  configVariable["base_url"]=$WEBSITE_HOSTNAME 
+  # configVariable["base_url"]=$WEBSITE_HOSTNAME
+  configVariable["base_url"]="https://submissions.post45.org"
   configVariable["time_zone"]=$TIME_ZONE
   configVariable["restful_urls"]="On"
   # Database
@@ -49,13 +54,11 @@ if ! test -f /home/config.inc.php; then
   configVariable["default_envelope_sender"]="no-reply@post45.org"
   # OAI
   configVariable["oai"]="Off"
+  for key in "${!configVariable[@]}"; do
+    ojs-variable $key ${configVariable[$key]}
+  done
+  cp $OJS_CONF $SAVED_OJS_CONF
 fi
-
-for key in "${!configVariable[@]}"; do
-  ojs-variable $key ${configVariable[$key]}
-done
 
 chmod +x /usr/local/bin/ojs-start
 ojs-start
-# Note: Fresh installs are async, so /home/config.inc.php may not be correct
-cp config.inc.php /home/config.inc.php
