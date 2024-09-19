@@ -31,7 +31,8 @@ ENV PACKAGES 			\
 	php81-apache2		\
 	runit			\
 	nano            \
-	bash			
+	bash			\
+	git
 
 # PHP extensions
 ENV PHP_EXTENSIONS		\
@@ -81,13 +82,23 @@ ENV BUILDERS 		\
 # This let us joining runs in a single layer.
 COPY exclude.list /tmp/exclude.list
 
+# Add build arguments for Git credentials
+ARG GIT_USERNAME
+ARG GIT_EMAIL
+ARG GIT_TOKEN
+
 RUN set -xe \
 	&& apk add --no-cache --virtual .build-deps $BUILDERS \
 	&& apk add --no-cache $PACKAGES \
 	&& apk add --no-cache $PHP_EXTENSIONS \
         && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.18/community/ gnu-libiconv=1.17-r1 \
-# Building OJS:
-      # Configure and download code from git
+		# Configure Git with provided credentials
+    && git config --global user.name "${GIT_USERNAME}" \
+    && git config --global user.email "${GIT_EMAIL}" \
+    && git config --global credential.helper store \
+    && echo "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com" > ~/.git-credentials \
+	# Building OJS:
+    # Configure and download code from git
 	&& git config --global url.https://.insteadOf git:// \
 	&& git config --global advice.detachedHead false \
 	&& git clone --depth 1 --single-branch --branch $OJS_VERSION --progress https://github.com/pkp/ojs.git . \
