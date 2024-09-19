@@ -4,11 +4,45 @@ on:
   push:
     paths:
       - 'plugins/themes/post45/**'
-  workflow_dispatch:  # Add this line to allow manual triggering
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
   update-submodule:
     runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+        token: ${{ secrets.SUBMODULE_GITHUB_TOKEN }}
+
+    - name: Update submodule
+      run: |
+        git submodule update --remote --merge
+        git add plugins/themes/post45
+        git commit -m "Update submodule to latest commit [skip ci]"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  initialize-git-repo:
+    runs-on: ubuntu-latest
+    needs: update-submodule
+
+    steps:
+    - name: Initialize Git Repository on Azure Web App
+      env:
+        KUDU_API: https://${{ env.AZURE_WEBAPP_NAME }}.scm.azurewebsites.net/api/command
+        KUDU_USER: ${{ env.AZURE_WEBAPP_NAME }}
+        KUDU_PASS: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      run: |
+        curl -u $KUDU_USER:$KUDU_PASS -X POST -d '{"command": "cd /var/www/html/plugins/themes/post45 && git init && git remote add origin https://github.com/Post45-Journal/ojs-theme.git"}' -H "Content-Type: application/json" $KUDU_API
+      
+
+  trigger-azure-pull:
+    runs-on: ubuntu-latest
+    needs: initialize-git-repo
 
     steps:
     - name: Run git pull on Azure Web App via Kudu API

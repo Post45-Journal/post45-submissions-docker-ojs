@@ -40,6 +40,7 @@ permissions:
 
 jobs:
   build:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"  # Skip if commit message contains [skip ci]
     runs-on: ubuntu-latest
 
     steps:
@@ -83,6 +84,7 @@ jobs:
             GIT_TOKEN=${{ secrets.SUBMODULE_GITHUB_TOKEN }}
 
   deploy:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"  # Skip if commit message contains [skip ci]
     permissions:
       contents: none
     runs-on: ubuntu-latest
