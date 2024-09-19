@@ -1,0 +1,20 @@
+name: Update Post45 Theme Submodule
+
+on:
+  push:
+    paths:
+      - 'plugins/themes/post45/**'
+  workflow_dispatch:  # Add this line to allow manual triggering
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Run git pull on Azure Web App via Kudu API
+      env:
+        KUDU_API: https://${{ env.AZURE_WEBAPP_NAME }}.scm.azurewebsites.net/api/command
+        KUDU_USER: ${{ env.AZURE_WEBAPP_NAME }}
+        KUDU_PASS: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      run: |
+        curl -u $KUDU_USER:$KUDU_PASS -X POST -d '{"command": "cd /var/www/html/plugins/themes/post45 && git pull origin main"}' -H "Content-Type: application/json" $KUDU_API
