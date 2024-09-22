@@ -13,9 +13,9 @@ sed -i 's:/tmp/ojs.config.inc.php:/tmp/config.inc.php:' /usr/local/bin/ojs-varia
 
 echo "Adding /home/files if not already present"
 mkdir -p /home/files
-chmod 755 /home/files
-chown apache /home/files
-chgrp apache /home/files
+
+echo "Adding symlink to persistent /home/public directory in web root"
+ln -s /home/public /var/www/html/public
 
 declare -A configVariable
 if [ -f $SAVED_OJS_CONF ]

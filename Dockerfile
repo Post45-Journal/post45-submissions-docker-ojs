@@ -139,7 +139,11 @@ RUN set -xe \
 	&& find . -name ".git" -exec rm -Rf '{}' \; \
 	&& find . -name ".travis.yml" -exec rm -Rf '{}' \; \
 	&& find . -name "test" -exec rm -Rf '{}' \; \
-	&& find . \( -name .gitignore -o -name .gitmodules -o -name .keepme \) -exec rm -Rf '{}' \;
+	&& find . \( -name .gitignore -o -name .gitmodules -o -name .keepme \) -exec rm -Rf '{}' \; \
+# Remove unnecessary (and annoying) files and folders
+	&& rm -rf /var/www/html/public \
+	&& rm config.TEMPLATE.inc.php \
+	&& rm -rf /var/www/html/files
 
 # Fix mixed content issue
 COPY .htaccess /var/www/html/
@@ -173,6 +177,6 @@ EXPOSE 8000 2222
 EXPOSE 80 
 EXPOSE 443
 
-VOLUME [ "/var/www/files", "/var/www/html/public" ]
+# VOLUME [ "/var/www/files", "/var/www/html/public" ]
 
 ENTRYPOINT [ "/var/www/html/entrypoint.sh" ] 
