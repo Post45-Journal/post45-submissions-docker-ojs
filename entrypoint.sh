@@ -20,7 +20,7 @@ find /mnt/azure/files -type d -exec chmod 750 {} \;  # for directories
 find /mnt/azure/files -type f -exec chmod 640 {} \;  # for files
 
 # Ensure that /mnt/azure/public is accessible to the web server
-chown -R apache:www-data /mnt/azure/files/public
+chown -R apache:www-data /mnt/azure/public
 find /mnt/azure/public -type d -exec chmod 750 {} \;  # for directories
 find /mnt/azure/public -type f -exec chmod 640 {} \;  # for files
 
@@ -50,6 +50,7 @@ else
   configVariable["locale"]="en"
   # Files
   configVariable["files_dir"]="/mnt/azure/files"
+  configVariable["public_files_dir"]="../../../mnt/azure/public"
   # Security
   configVariable["force_ssl"]="On"
   configVariable["salt"]=$SALT
