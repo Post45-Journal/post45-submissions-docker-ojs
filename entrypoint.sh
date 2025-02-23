@@ -13,6 +13,14 @@ sed -i 's:/tmp/ojs.config.inc.php:/tmp/config.inc.php:' /usr/local/bin/ojs-varia
 
 echo "Adding /home/files if not already present"
 mkdir -p /home/files
+chown -R apache:www-data /home/files
+find /home/files -type d -exec chmod 750 {} \;  # for directories
+find /home/files -type f -exec chmod 640 {} \;  # for files
+
+# Ensure that /home/public is accessible to the web server
+chown -R apache:www-data /home/public
+find /home/public -type d -exec chmod 750 {} \;  # for directories
+find /home/public -type f -exec chmod 640 {} \;  # for files
 
 echo "Adding symlink to persistent /home/public directory in web root"
 ln -s /home/public /var/www/html/public
