@@ -11,28 +11,30 @@ chmod +x /usr/local/bin/ojs-variable
 # Temporary fix for error in ojs-variable (fixed here https://gitlab.com/pkp-org/docker/ojs/-/commit/f4f33f370e7c765b599868f0ca701898c875b47f, but not in stable-3_4_0 branch)
 sed -i 's:/tmp/ojs.config.inc.php:/tmp/config.inc.php:' /usr/local/bin/ojs-variable
 
-echo "Adding /home/files if not already present"
-mkdir -p /home/files
-chown -R apache:www-data /home/files
-find /home/files -type d -exec chmod 750 {} \;  # for directories
-find /home/files -type f -exec chmod 640 {} \;  # for files
+# Create required /mnt/azure/ subdirectories if they don't exist
+mkdir -p /mnt/azure/files
+mkdir -p /mnt/azure/public
 
-# Ensure that /home/public is accessible to the web server
-chown -R apache:www-data /home/public
-find /home/public -type d -exec chmod 750 {} \;  # for directories
-find /home/public -type f -exec chmod 640 {} \;  # for files
+chown -R apache:www-data /mnt/azure/files
+find /mnt/azure/files -type d -exec chmod 750 {} \;  # for directories
+find /mnt/azure/files -type f -exec chmod 640 {} \;  # for files
 
-echo "Adding symlink to persistent /home/public directory in web root"
-ln -s /home/public /var/www/html/public
+# Ensure that /mnt/azure/public is accessible to the web server
+chown -R apache:www-data /mnt/azure/files/public
+find /mnt/azure/public -type d -exec chmod 750 {} \;  # for directories
+find /mnt/azure/public -type f -exec chmod 640 {} \;  # for files
+
+echo "Adding symlink to persistent /mnt/azure/public directory in web root"
+ln -s /mnt/azure/public /var/www/html/public
 
 declare -A configVariable
 if [ -f $SAVED_OJS_CONF ]
 then 
-  echo "Using existing config.inc.php from /home/config.inc.php"
+  echo "Using existing config.inc.php from /mnt/azure/config.inc.php"
   cp $SAVED_OJS_CONF $OJS_CONF 
 else
   # Set config variables using env variables https://github.com/pkp/ojs/blob/main/config.TEMPLATE.inc.php
-  echo "No existing config in /home. Updating OJS config based on env variables..."
+  echo "No existing config in /mnt/azure. Updating OJS config based on env variables..."
   # General
   configVariable["installed"]="On"
   # configVariable["base_url"]=$WEBSITE_HOSTNAME
@@ -47,7 +49,7 @@ else
   # Locatlization
   configVariable["locale"]="en"
   # Files
-  configVariable["files_dir"]="/home/files"
+  configVariable["files_dir"]="/mnt/azure/files"
   # Security
   configVariable["force_ssl"]="On"
   configVariable["salt"]=$SALT

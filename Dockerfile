@@ -12,7 +12,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1  \
 	OJS_CLI_INSTALL="1"         \
 	OJS_WEB_CONF="/etc/apache2/conf.d/ojs.conf"	\
 	OJS_CONF="/var/www/html/config.inc.php" \
-	SAVED_OJS_CONF="/home/config.inc.php"
+	SAVED_OJS_CONF="/mnt/azure/config.inc.php"
 
 # PHP_INI_DIR to be symmetrical with official php docker image
 ENV PHP_INI_DIR /etc/php/8.1
@@ -179,4 +179,4 @@ EXPOSE 443
 
 # VOLUME [ "/var/www/files", "/var/www/html/public" ]
 
-ENTRYPOINT [ "/var/www/html/entrypoint.sh" ] 
+ENTRYPOINT [ "/var/www/html/entrypoint.sh" ]
