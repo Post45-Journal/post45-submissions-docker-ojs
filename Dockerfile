@@ -160,6 +160,9 @@ RUN apk add openssh \
                      && cd /etc/ssh/ \
                      && ssh-keygen -A
 
+# Add SMB Client
+RUN apk add --no-cache samba-client
+
 # Add themes
 ADD plugins/themes /var/www/html/plugins/themes
 
