@@ -161,7 +161,11 @@ RUN apk add openssh \
                      && ssh-keygen -A
 
 # Add SMB Client
-RUN apk add --no-cache samba-client
+RUN apk add --no-cache samba-client curl
+
+# Copy the mount script
+COPY mount-azure-file-share.sh /usr/local/bin/mount-azure-file-share.sh
+RUN chmod +x /usr/local/bin/mount-azure-file-share.sh
 
 # Add themes
 ADD plugins/themes /var/www/html/plugins/themes
