@@ -91,7 +91,7 @@ jobs:
             GIT_EMAIL=${{ env.GIT_EMAIL }}
             GIT_TOKEN=${{ secrets.SUBMODULE_GITHUB_TOKEN }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,new
+          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
 
   deploy:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"  # Skip if commit message contains [skip ci]
