@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
           token: ${{ secrets.SUBMODULE_GITHUB_TOKEN }}
@@ -63,13 +63,21 @@ jobs:
 
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
+        
       - name: Retrieve GitHub user email
         id: get_email
         run: |
           echo "Retrieving email for user: ${{ github.actor }}"
           email=$(curl -s -H "Authorization: token ${{ github.token }}" https://api.github.com/user | jq -r '.email')
           echo "GIT_EMAIL=$email" >> $GITHUB_ENV
+
+      - name: Cache Docker Layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
@@ -82,6 +90,8 @@ jobs:
             GIT_USERNAME=${{ github.actor }}
             GIT_EMAIL=${{ env.GIT_EMAIL }}
             GIT_TOKEN=${{ secrets.SUBMODULE_GITHUB_TOKEN }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache,new
 
   deploy:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"  # Skip if commit message contains [skip ci]
