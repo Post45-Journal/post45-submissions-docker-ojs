@@ -4,11 +4,8 @@ set -e
 # Get env vars in the Dockerfile to show up in the SSH session
 eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/g' | sed '/=/s//="/' | sed 's/$/"/' >> /etc/profile)
 
-# Print the current user
-echo "Running as user: $(whoami)"
-
 # Mount Azure File Share
-sudo /usr/local/bin/mount-azure-file-share.sh
+/usr/local/bin/mount-azure-file-share.sh
 
 echo "Starting SSH ..."
 /usr/sbin/sshd
