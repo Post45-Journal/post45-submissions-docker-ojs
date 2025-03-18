@@ -6,6 +6,9 @@ set -e
 : "${AZURE_STORAGE_ACCOUNT_NAME:?Variable not set or empty}"
 : "${MOUNT_POINT:?Variable not set or empty}"
 
+# Print the current user (ensure this script is running as root)
+echo "Running as user: $(whoami)"
+
 # Create mount point if it doesn't exist
 mkdir -p $MOUNT_POINT
 
