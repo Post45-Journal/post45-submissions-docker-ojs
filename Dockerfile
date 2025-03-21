@@ -160,8 +160,16 @@ RUN apk add openssh \
                      && cd /etc/ssh/ \
                      && ssh-keygen -A
 
-# Add SMB Client
-RUN apk add --no-cache samba-client curl
+# # Add SMB Client
+# RUN apk add --no-cache samba-client curl
+# Add cifs-utils
+RUN apk add --no-cache cifs-utils
+# Install Azure CLI
+RUN apk add py3-pip
+RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
+RUN pip install --upgrade pip
+RUN pip install azure-cli
+CMD sh
 
 # Copy the mount script
 COPY mount-azure-file-share.sh /usr/local/bin/mount-azure-file-share.sh
